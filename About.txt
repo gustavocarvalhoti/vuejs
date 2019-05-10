@@ -1,9 +1,19 @@
 ***********************************************************************************************
 #Commands (Precisa do Node para rodar)
 npm install -g @vue/cli                     <- INSTALL
+npm install -g vue-cli@2.7.0                <- INSTALL
+npm install                                 <- Instala as dependenciasls
+npm run dev                                 <- Start
 vue --version                               <- Descobre a versão
 vue create conversor                        <- Cria o projeto conversor
+vue init webpack-simple alurapic            <- Cria o projeto alurapic com template do zero
 npm run serve                               <- Inicia o servidor (Dentro da pasta conversor)
+npm install vue-resource@1.0.3 --save       <- Para fazer os gets e posts
+npm install vue-router@2.1.1 --save         <- Gerencia as rotas
+
+#Iniciar a api (Banco de dados mocado)
+cd /home/gusilva/Projects/Vue/api
+npm start
 
 ***********************************************************************************************
 conversor/src/main.js                       <- Tudo que entra e sai da tela
@@ -22,23 +32,257 @@ export default {
 }
 
 ***********************************************************************************************
+#Babel - Transpiler
+#Webpack - Module bundler
+
 ***********************************************************************************************
+#alurapic/src/main.js
+#Precisamos declarar os componentes aqui
+new Vue({
+  el: '#app',
+  render: h => h(App)
+});
+
 ***********************************************************************************************
+#Interpolação e data binding
+Interpolação - passando dados para o template "Chave dupla {{ msg }}"
+Data binding - Associação de dados da fonte de pados para o template, somente assim
+<script>
+  export default {
+    name: 'app',
+    data() {
+      return {
+        msg: 'Vue.js é fera 0/' <- Envia
+      }
+    }
+  }
+</script>
+
+#Recebe
+<h1>{{ msg }}</h1>
+<!--Para atributo precisa usar o v-bind ou :-->
+<img v-bind:src="foto.url" v-bind:alt="foto.url"/>
+<img :src="foto.url" :alt="foto.url"/>
+#Dá para sar assim tb, não é muito legal
+<h1 v-text="msg"></h1>
+
 ***********************************************************************************************
+#For
+<template>
+  <div>
+    <h1>{{ titulo }}</h1>
+    <!--Para atributo precisa usar o v-bind-->
+    <ul>
+      <li v-for="foto of fotos">
+        <img :src="foto.url" :alt="foto.titulo"/>
+      </li>
+    </ul>
+  </div>
+</template>
+#pode usar os 2 tipos
+v-for="nome of nomes"
+v-for="nome in nomes"
+
 ***********************************************************************************************
+#O módulo VueResource: instalação e registro - Para fazer os gets e sets
+npm install vue-resource@1.0.3 --save Para fazer os gets e posts
+
+alurapic/src/main.js
+import Vue from 'vue'
+import App from './App.vue'
+import VueResource from 'vue-resource';
+//Deixa disponível para todos os componentes
+Vue.use(VueResource);
+
 ***********************************************************************************************
+@Componentes do cliclo de vida
+https://vuejs.org/v2/api/#Options-Lifecycle-Hooks
+created()
+
 ***********************************************************************************************
+#Retorna o then e catch na mesma linha
+this.$http.get('http://localhost:3000/v1/fotos')
+      .then(res => res.json())
+      .then(fotos => this.fotos = fotos, err => console.log(err));
+
 ***********************************************************************************************
+#PAssando objeto e HTML tntre componentes
+alurapic/src/App.vue
+<script>
+  import Painel from './components/shared/painel/Painel.vue';
+  export default {
+    components: {
+      'meu-painel': Painel
+    }
+  }
+</script>
+<li class="lista-fotos-item" v-for="foto in fotos">
+  <!--Passa o objeto foto-->
+  <meu-painel :foto="foto">
+    <!--Joga para dentro do painel a imagem-->
+    <img class="imagem-responsiva" :src="foto.url" :alt="foto.titulo">
+  </meu-painel>
+</li>
+
+#Recebe as informaçõe no componente
+alurapic/src/components/shared/painel/Painel.vue
+<script>
+  /* props: ['foto'] -> Recebe a propriedade */
+  export default {
+    props: ['foto']
+  }
+</script>
+<template>
+  <div class="painel">
+    <h2 class="painel-titulo">{{foto.titulo}}</h2>
+    <!--
+    Joga essa imagem dentro do SLOT <- Tag do vue.js
+    <img class="imagem-responsiva" :src="foto.url" :alt="foto.titulo">
+    -->
+    <slot class="painel-conteudo"></slot>
+  </div>
+</template>
+
 ***********************************************************************************************
+#Aplicar o estilo somente ao componente que eu criei
+<style scoped>
+
 ***********************************************************************************************
+#Usando mais de 1 slot
+<template>
+    <div>
+        <slot name="cabecalho" class="header"></slot>
+        <slot class="body"></slot>
+        <slot name="rodape" class="footer"></slot>
+    </div>
+</template>
+<componente-qualquer>
+    <div slot="cabecalho">
+        <h1>Bem-vindo!</h1>
+    </div>
+    <p>Seja bem-vindo à Alura!</p>
+    <div slot="rodape">
+        <p>copyright 2017</p>
+    </div>
+</componente-qualquer>
+
 ***********************************************************************************************
+#On input - Ao digitar ele pega ps caracteres e executa algo proposto
+<input type="search" class="filtro" placeholder="Filtre pelo título da foto" v-on:input="filtro = $event.target.value">
+
 ***********************************************************************************************
+#Filtro efetivo sem recarregar
+<template>
+  <input type="search" class="filtro" placeholder="Filtre pelo título da foto" v-on:input="filtro = $event.target.value">
+  <li class="lista-fotos-item" v-for="foto in fotosComFiltro"> <- Não precisa chamar assim fotosComFiltro()
+</template>
+<script>
+    computed: {
+      // Como se fosse uma property comum
+      fotosComFiltro() {
+        // Se digitou alguma coisa
+        if (this.filtro) {
+          // 'i' - Não é CASEsensitive
+          let exp = new RegExp(this.filtro.trim(), 'i');
+          return this.fotos.filter(foto => exp.test(foto.titulo));
+        } else {
+          return this.fotos;
+        }
+      }
+    }
+</script>
+
 ***********************************************************************************************
+#Esconder imagens
+<h2 class="painel-titulo" v-on:dblclick="visible = !visible">{{foto.titulo}}</h2>
+ou
+<h2 class="painel-titulo" @dblclick="visible = !visible">{{foto.titulo}}</h2>
+
+<script>
+  export default {
+    data() {
+      return {visible: true}
+    }
+  }
+</script>
+
 ***********************************************************************************************
+#Animação
+<transition name="painel-fade"> <- Colocar a tag transition
+  <div class="painel-conteudo" v-show="visible">
+    <slot></slot>
+  </div>
+</transition>
+#Efeito no CSS
+.painel-fade-enter, .painel-fade-leave-active {
+  opacity: 0
+}
+
+.painel-fade-enter-active, .painel-fade-leave-active {
+  transition: opacity .4s
+}
+
 ***********************************************************************************************
+#Usando um componente dentro do outro \0/
+<meu-painel :foto="foto">
+  <imagem-responsiva :url="foto.url" :titulo="foto.titulo"></imagem-responsiva>
+</meu-painel>
+
 ***********************************************************************************************
+#Configurando rotas <- alurapic/src/main.js
+import Vue from 'vue'
+import App from './App.vue'
+import VueResource from 'vue-resource';
+import VueRouter from 'vue-router';
+import { routes } from './routes'; // tem que vir entre chaves, porque não é default
+//Deixa disponível para todos os componentes
+Vue.use(VueResource);
+//Gerencia as toras
+Vue.use(VueRouter);
+const router = new VueRouter({
+  routes ,
+  mode: 'history' /* Remove o # da URL */
+});
+//Apresenta meu objeto para a View, virando global
+new Vue({
+  el: '#app',
+  router,
+  render: renderizar => renderizar(App)
+});
+
+alurapic/src/routes.js
+import Home from './components/home/Home.vue';
+import Cadastro from './components/cadastro/Cadastro.vue';
+export const routes = [
+  { path: '', component: Home },
+  { path: '/cadastro', component: Cadastro }
+];
+
 ***********************************************************************************************
+#Validar dados prop
+props: {
+  rotas: {
+    type: Array,
+    required: true
+  }
+}
+
 ***********************************************************************************************
+#Utilizando metodos - alurapic/src/components/home/Home.vue
+methods: {
+  remove(foto) {
+    if (confirm('Confirma?')) {
+      alert(foto.titulo);
+    }
+  }
+}
+<!--Passa o evento click para um componente-->
+<meu-botao rotulo="remover" tipo="button" @click.native="remove(foto)"/>
+<!--Se não fosse componente era só colocar @click="remove()"-->
+
+https://cursos.alura.com.br/course/vue-parte1/task/24445
+
+
 ***********************************************************************************************
 ***********************************************************************************************
 ***********************************************************************************************
