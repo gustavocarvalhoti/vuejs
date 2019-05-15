@@ -1,13 +1,13 @@
 <!--Single file template--><!--Apresentação-->
 <template>
   <div>
-    <h1 class="titulo">{{ titulo }}</h1>
+    <h1 class="centralizado" v-meu-transform>{{ titulo }}</h1>
     <input type="search" class="filtro" placeholder="Filtre pelo título da foto" v-on:input="filtro = $event.target.value">
     <ul class="lista-fotos">
       <li class="lista-fotos-item" v-for="foto in fotosComFiltro">
         <!--Passa o objeto foto-->
         <meu-painel :foto="foto">
-          <imagem-responsiva :url="foto.url" :titulo="foto.titulo"></imagem-responsiva>
+          <imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform></imagem-responsiva>
           <!--Passa o evento click para um componente-->
           <!--<meu-botao rotulo="remover" tipo="button" @click.native="remove(foto)"/>-->
           <meu-botao rotulo="remover" tipo="button" @botaoAtivado="remove(foto)" :confirmacao="false" estilo="perigo"/>
@@ -69,6 +69,10 @@
 
 <!--Estilo, os 3 juntos define o componente-->
 <style scoped>
+  .centralizado {
+    text-align: center;
+  }
+
   .lista-fotos {
     list-style: none;
   }
