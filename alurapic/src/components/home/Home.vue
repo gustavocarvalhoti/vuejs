@@ -9,7 +9,8 @@
         <meu-painel :foto="foto">
           <imagem-responsiva :url="foto.url" :titulo="foto.titulo"></imagem-responsiva>
           <!--Passa o evento click para um componente-->
-          <meu-botao rotulo="remover" tipo="button" @click.native="remove(foto)"/>
+          <!--<meu-botao rotulo="remover" tipo="button" @click.native="remove(foto)"/>-->
+          <meu-botao rotulo="remover" tipo="button" @botaoAtivado="remove(foto)" :confirmacao="false" estilo="perigo"/>
           <!--Se não fosse componente era só colocar @click="remove()"-->
         </meu-painel>
       </li>
@@ -19,9 +20,9 @@
 
 <!--Para aparecer em outro lugar precisa ser exportado--><!--Comportamento e dados-->
 <script>
+  import Botao from '../shared/botao/Botao.vue';
   import Painel from '../shared/painel/Painel.vue';
   import ImagemResponsiva from '../shared/imagem-responsiva/ImagemResponsiva.vue';
-  import Botao from '../shared/botao/Botao.vue';
 
   export default {
     components: {

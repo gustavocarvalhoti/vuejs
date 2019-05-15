@@ -280,10 +280,45 @@ methods: {
 <meu-botao rotulo="remover" tipo="button" @click.native="remove(foto)"/>
 <!--Se não fosse componente era só colocar @click="remove()"-->
 
-https://cursos.alura.com.br/course/vue-parte1/task/24445
+***********************************************************************************************
+#Eventos customizados <- Chama o remove(foto) primeiro
+<meu-botao rotulo="remover" tipo="button" @botaoAtivado="remove(foto)"/> <- alurapic/src/components/home/Home.vue
+
+alurapic/src/components/shared/botao/Botao.vue <- Agora o disparaAcao()
+<template>
+  <button class="botao botao-perigo" :type="tipo" @click="disparaAcao()">{{rotulo}}</button>
+</template>
+<script>
+  export default {
+    props: ['tipo', 'rotulo'],
+    methods: {
+      disparaAcao() { <- AKI
+        if (confirm('Confirma operacao?')) {
+          this.$emit('botaoAtivado'); <- Dispara o evento customizado, o remove(foto)
+        }
+      }
+    }
+  }
+</script>
 
 
 ***********************************************************************************************
+#Validando as props
+quantidade: {
+  type: Number,
+  required: true
+},
+confirmacao: {
+  required: false,
+  default: false,
+  type: Boolean
+},
+estilo: {
+  required: false,
+  default: 'padrao',
+  type: String
+}
+
 ***********************************************************************************************
 ***********************************************************************************************
 ***********************************************************************************************
@@ -291,4 +326,4 @@ https://cursos.alura.com.br/course/vue-parte1/task/24445
 ***********************************************************************************************
 ***********************************************************************************************
 ***********************************************************************************************
-***********************************************************************************************
+https://cursos.alura.com.br/course/vue-parte1/task/24300
