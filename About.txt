@@ -346,6 +346,206 @@ Utilizando
 <imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform></imagem-responsiva>
 
 ***********************************************************************************************
+#Passando parametros na diretiva
+<imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform="{incremento: 90, animate: true}"></imagem-responsiva>
+
+#Pegando
+Vue.directive('meu-transform', {
+  bind(el, binding, vnode) {
+    el.addEventListener('dblclick', function() {
+        incremento = binding.value.incremento;  <- Aki
+        animate = binding.value.animate;        <- Aki
+    });
+  }
+});
+
+***********************************************************************************************
+#Dá para passar assim tb, não gostei, nesse ele passa o animate e reverse true
+<imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform.animate.reverse="15"></imagem-responsiva>
+
+#Recebendo
+import Vue from 'vue';
+Vue.directive('meu-transform', {
+  bind(el, binding, vnode) {
+    el.addEventListener('dblclick', function() {
+      let incremento = binding.value || 90;
+      if(binding.modifiers.reverse) { <- Se receber o reverse
+        current-=incremento;
+      } else {
+        current+=incremento;
+      }
+      this.style.transform = `rotate(${current}deg)`;
+      if (binding.modifiers.animate) this.style.transition = "transform 0.5s"; <- Se receber o animate
+    });
+  }
+});
+
+***********************************************************************************************
+#Lidando com argumentos, :rotate :scale
+<imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform:scale.animate="1.2"/>
+
+Vue.directive('meu-transform', {
+  bind(el, binding, vnode) {
+    let current = 0;
+    // Roda a foto ao receber um dblclick
+    el.addEventListener('dblclick', function() {
+      if(!binding.arg || binding.arg === 'rotate') {
+      } else if(binding.arg === 'scale') {} <- Vem no binding.arg
+    });
+  }
+});
+
+***********************************************************************************************
+# vnode - Este parâmetro é uma referência para o Virtual DOM utilizado pelo Vue.
+# Ele permite acessar propriedades do Componente no qual ela foi associada.
+# No entanto, essa dependência pode acabar com o reuso da diretiva, por isso deve ser usado com parcimônia.
+#Além disso, não é comum querermos interagir com esse parâmetro.
+
+
+***********************************************************************************************
+#  Two-way data binding - Assosiação de dados bidirecional, da View para o controler
+<input id="titulo" autocomplete="off" v-model="foto.titulo">
+<input id="url"    autocomplete="off" v-model.lazy="foto.url">
+
+***********************************************************************************************
+# Criando um modelo <- alurapic/src/domain/foto/Foto.js
+export default class Foto {
+  constructor(titulo='', url='', descricao='') {
+    this.titulo = titulo;
+    this.url = url;
+    this.descricao = descricao;
+  }
+}
+
+alurapic/src/components/cadastro/Cadastro.vue
+<script>
+  import Foto from '../../domain/foto/Foto'
+  export default {
+    data() {
+      return {
+        foto: new Foto() <- Ele cria o Default aqui com titulo, url e descrição
+      }
+    }
+  }
+</script>
+
+***********************************************************************************************
+#Post
+this.$http
+  .post('http://localhost:3000/v1/fotos', this.foto)
+  .then(() => this.foto = new Foto(), err => console.log(err));
+
+#Delete
+this.$http
+  .delete(`http://localhost:3000/v1/fotos/${foto._id}`)
+  .then(() => {
+      // assim que apagar, exibe a mensagem para o usuário
+      this.mensagem = 'Foto removida com sucesso';
+      // Remove o objeto da lista
+      let indice = this.fotos.indexOf(foto); // acha a posição da foto na lista
+      this.fotos.splice(indice, 1);
+    },
+    err => {
+      this.mensagem = 'Não foi possível remover a foto';
+      console.log(err);
+    }
+  )
+
+#Get
+this.$http.get('http://localhost:3000/v1/fotos')
+  .then(res => res.json())
+  .then(fotos => this.fotos = fotos, err => console.log(err));
+
+***********************************************************************************************
+#Centralizando o domínio da API
+alurapic/src/main.js
+// http usará sempre o endereço abaixo
+Vue.http.options.root = 'http://localhost:3000';
+// Ai pode chamar sem o path, não precisa mais do http://localhost:3000
+this.$http.get('v1/fotos').then(res => res.json()).then(fotos => this.fotos = fotos, err => console.log(err));
+
+#Outra maneira de fazer de chamar as requests, colocar no create
+created() {
+  // Dessa maneira pode ser utilizado pelo delete tb
+  this.resource = this.$resource('v1/fotos{/id}');
+  this.resource
+  .query()
+  .then(res => res.json())
+  .then(fotos => this.fotos = fotos, err => console.log(err));
+}
+
+#Ai vc chama assim: (Não precisa passar a URL)
+this.resource
+  .delete({id: foto._id})
+  .then(
+    () => {
+      let indice = this.fotos.indexOf(foto);
+      this.fotos.splice(indice, 1);
+      this.mensagem = 'Foto removida com sucesso'
+    },
+    err => {
+      this.mensagem = 'Não foi possível remover a foto';
+      console.log(err);
+    }
+);
+
+
+***********************************************************************************************
+#Agora sim o Service.js
+export default class FotoService {
+  constructor(resource) {
+    this._resource = resource('v1/fotos{/id}');
+  }
+  cadastra(foto) {
+    return this._resource.save(foto);
+  }
+  lista() {
+    return this._resource
+    .query()
+    .then(res => res.json());
+  }
+  apaga(id) {
+    return this._resource.delete({ id });
+  }
+}
+
+#Chama assim
+import FotoService from '../../domain/foto/FotoService';
+created() {
+  // Inicia o serviço
+  this.service = new FotoService(this.$resource);
+  this.service.lista().then(fotos => this.fotos = fotos, err => console.log(err));
+}
+
+
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
+***********************************************************************************************
 ***********************************************************************************************
 ***********************************************************************************************
 ***********************************************************************************************

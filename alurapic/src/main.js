@@ -8,6 +8,9 @@ import './directives/Transform';   // diretiva que manipula o DOM
 //Deixa disponível para todos os componentes
 Vue.use(VueResource);
 
+// http usará sempre o endereço abaixo
+Vue.http.options.root = 'http://localhost:3000';
+
 //Gerencia as roras
 Vue.use(VueRouter);
 

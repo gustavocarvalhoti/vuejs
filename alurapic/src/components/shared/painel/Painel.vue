@@ -1,7 +1,7 @@
 <template>
   <div class="painel">
     <!--<h2 class="painel-titulo" v-on:dblclick="visible = !visible">{{foto.titulo}}</h2>-->
-    <h2 class="painel-titulo" @dblclick="visible = !visible">{{foto.titulo}}</h2>
+    <h2 class="painel-titulo" @dblclick="visible = !visible">{{foto.titulo.length > 10 ? (foto.titulo.substring(0,10) + '...') : foto.titulo }}</h2>
     <!--
     Joga essa imagem dentro do SLOT <- Tag do vue.js
     <img class="imagem-responsiva" :src="foto.url" :alt="foto.titulo">
@@ -57,6 +57,11 @@
 
   .painel-fade-enter-active, .painel-fade-leave-active {
     transition: opacity .4s
+  }
+
+  /* Não deixa a imagem ultrapassar o limite do painel */
+  .painel-conteudo {
+    overflow: hidden;
   }
 </style>
 
