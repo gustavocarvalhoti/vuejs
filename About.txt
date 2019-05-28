@@ -15,6 +15,7 @@ npm install vue-router@2.1.1 --save         <- Gerencia as rotas
 cd /home/gusilva/Projects/Vue/api
 npm start
 
+
 ***********************************************************************************************
 conversor/src/main.js                       <- Tudo que entra e sai da tela
 
@@ -31,9 +32,11 @@ export default {
   }
 }
 
+
 ***********************************************************************************************
 #Babel - Transpiler
 #Webpack - Module bundler
+
 
 ***********************************************************************************************
 #alurapic/src/main.js
@@ -42,6 +45,7 @@ new Vue({
   el: '#app',
   render: h => h(App)
 });
+
 
 ***********************************************************************************************
 #Interpolação e data binding
@@ -66,6 +70,7 @@ Data binding - Associação de dados da fonte de pados para o template, somente 
 #Dá para sar assim tb, não é muito legal
 <h1 v-text="msg"></h1>
 
+
 ***********************************************************************************************
 #For
 <template>
@@ -83,6 +88,7 @@ Data binding - Associação de dados da fonte de pados para o template, somente 
 v-for="nome of nomes"
 v-for="nome in nomes"
 
+
 ***********************************************************************************************
 #O módulo VueResource: instalação e registro - Para fazer os gets e sets
 npm install vue-resource@1.0.3 --save Para fazer os gets e posts
@@ -94,16 +100,19 @@ import VueResource from 'vue-resource';
 //Deixa disponível para todos os componentes
 Vue.use(VueResource);
 
+
 ***********************************************************************************************
 @Componentes do cliclo de vida
 https://vuejs.org/v2/api/#Options-Lifecycle-Hooks
 created()
+
 
 ***********************************************************************************************
 #Retorna o then e catch na mesma linha
 this.$http.get('http://localhost:3000/v1/fotos')
       .then(res => res.json())
       .then(fotos => this.fotos = fotos, err => console.log(err));
+
 
 ***********************************************************************************************
 #PAssando objeto e HTML tntre componentes
@@ -143,9 +152,11 @@ alurapic/src/components/shared/painel/Painel.vue
   </div>
 </template>
 
+
 ***********************************************************************************************
 #Aplicar o estilo somente ao componente que eu criei
 <style scoped>
+
 
 ***********************************************************************************************
 #Usando mais de 1 slot
@@ -166,9 +177,11 @@ alurapic/src/components/shared/painel/Painel.vue
     </div>
 </componente-qualquer>
 
+
 ***********************************************************************************************
 #On input - Ao digitar ele pega ps caracteres e executa algo proposto
 <input type="search" class="filtro" placeholder="Filtre pelo título da foto" v-on:input="filtro = $event.target.value">
+
 
 ***********************************************************************************************
 #Filtro efetivo sem recarregar
@@ -192,6 +205,7 @@ alurapic/src/components/shared/painel/Painel.vue
     }
 </script>
 
+
 ***********************************************************************************************
 #Esconder imagens
 <h2 class="painel-titulo" v-on:dblclick="visible = !visible">{{foto.titulo}}</h2>
@@ -205,6 +219,7 @@ ou
     }
   }
 </script>
+
 
 ***********************************************************************************************
 #Animação
@@ -222,11 +237,13 @@ ou
   transition: opacity .4s
 }
 
+
 ***********************************************************************************************
 #Usando um componente dentro do outro \0/
 <meu-painel :foto="foto">
   <imagem-responsiva :url="foto.url" :titulo="foto.titulo"></imagem-responsiva>
 </meu-painel>
+
 
 ***********************************************************************************************
 #Configurando rotas <- alurapic/src/main.js
@@ -258,6 +275,7 @@ export const routes = [
   { path: '/cadastro', component: Cadastro }
 ];
 
+
 ***********************************************************************************************
 #Validar dados prop
 props: {
@@ -266,6 +284,7 @@ props: {
     required: true
   }
 }
+
 
 ***********************************************************************************************
 #Utilizando metodos - alurapic/src/components/home/Home.vue
@@ -279,6 +298,7 @@ methods: {
 <!--Passa o evento click para um componente-->
 <meu-botao rotulo="remover" tipo="button" @click.native="remove(foto)"/>
 <!--Se não fosse componente era só colocar @click="remove()"-->
+
 
 ***********************************************************************************************
 #Eventos customizados <- Chama o remove(foto) primeiro
@@ -319,6 +339,7 @@ estilo: {
   type: String
 }
 
+
 ***********************************************************************************************
 #Diretivas vs Componentes
 Diretivas -> Blocos de código isolados que operam sobre componentes e que manipulam o DOM apenas
@@ -345,6 +366,7 @@ Utilizando
 <h1 class="centralizado" v-meu-transform>{{ titulo }}</h1>
 <imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform></imagem-responsiva>
 
+
 ***********************************************************************************************
 #Passando parametros na diretiva
 <imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform="{incremento: 90, animate: true}"></imagem-responsiva>
@@ -358,6 +380,7 @@ Vue.directive('meu-transform', {
     });
   }
 });
+
 
 ***********************************************************************************************
 #Dá para passar assim tb, não gostei, nesse ele passa o animate e reverse true
@@ -380,6 +403,7 @@ Vue.directive('meu-transform', {
   }
 });
 
+
 ***********************************************************************************************
 #Lidando com argumentos, :rotate :scale
 <imagem-responsiva :url="foto.url" :titulo="foto.titulo" v-meu-transform:scale.animate="1.2"/>
@@ -395,6 +419,7 @@ Vue.directive('meu-transform', {
   }
 });
 
+
 ***********************************************************************************************
 # vnode - Este parâmetro é uma referência para o Virtual DOM utilizado pelo Vue.
 # Ele permite acessar propriedades do Componente no qual ela foi associada.
@@ -406,6 +431,7 @@ Vue.directive('meu-transform', {
 #  Two-way data binding - Assosiação de dados bidirecional, da View para o controler
 <input id="titulo" autocomplete="off" v-model="foto.titulo">
 <input id="url"    autocomplete="off" v-model.lazy="foto.url">
+
 
 ***********************************************************************************************
 # Criando um modelo <- alurapic/src/domain/foto/Foto.js
@@ -428,6 +454,7 @@ alurapic/src/components/cadastro/Cadastro.vue
     }
   }
 </script>
+
 
 ***********************************************************************************************
 #Post
@@ -455,6 +482,7 @@ this.$http
 this.$http.get('http://localhost:3000/v1/fotos')
   .then(res => res.json())
   .then(fotos => this.fotos = fotos, err => console.log(err));
+
 
 ***********************************************************************************************
 #Centralizando o domínio da API
@@ -519,18 +547,178 @@ created() {
 
 
 ***********************************************************************************************
+#Pega o parametro da URL
+id: this.$route.params.if
+
+
 ***********************************************************************************************
+// Redirect programado
+this.$router.push({name: 'home'});
+
+
 ***********************************************************************************************
+// v-if para exibir ou não
+<h1 v-if="foto._id" class="centralizado">Alteração</h1>
+<h1 v-else class="centralizado">Inclusão</h1>
+
+
 ***********************************************************************************************
+#O módulo VeeValidate - Importado na versão 2.0 do vue - Valida a entrada do formulário
+npm install vee-validate@2.0.0-beta.18 --save
+import VeeValidate from 'vee-validate'; <- Main
+Vue.use(VeeValidate);
+
+#Verificando no HTML - Ele vincula pelo name
+<input id="titulo" name="titulo" autocomplete="off" v-validate data-vv-rules="required|min:3|max:10" data-vv-as="TÍTULO" v-model="foto.titulo"/>
+<span class="erro" v-show="errors.has('titulo')">{{ errors.first('titulo') }}</span>
+
+#Verificando antes do post, valida se todos os campos do form estão OK
+this.$validator.validateAll()
+.then(success => {
+  ...só vai
+  } else {
+    console.log("Preencha todos os campos");
+  }
+});
+
+#Colocar em portugues
+import msg from './pt_BR';
+Vue.use(VeeValidate, {
+  locale: 'pt_BR',
+  dictionary: {
+    pt_BR: {
+      messages: msg
+    }
+  }
+});
+
+
 ***********************************************************************************************
+#Gerando arquivos para distribuir - colocar no servidor - deploy
+npm run build <- Faz a minificação e zipa
+passa para o servidor somente -> alurapic/index.html e alurapic/dist
+
+#Teste local server
+/home/gusilva/Projects/Vue/server <- Server Node.js
+Copiar o arquivo de deploy para -> /home/gusilva/Projects/Vue/server/public
+Ficou assim:
+/home/gusilva/Projects/Vue/server/public/dist/build.js
+/home/gusilva/Projects/Vue/server/public/index.html
+
+#Pronto, server rodando
+npm start
+
+
 ***********************************************************************************************
+Code splitting  - Separa o codigo, carrega depois que entra em algum lugar que usa o cadastro
+Lazy loading    - Carrega quando vai usar o componente e depois não carrega mais
+alurapic/src/routes.js
+const Cadastro = () => System.import('./components/cadastro/Cadastro.vue');
+
+
 ***********************************************************************************************
+#Importando o bootstrap
+npm install bootstrap@3.3.7 --save
+#Para construir com o projeto, importa dentro do modulo
+import 'bootstrap/dist/css/bootstrap.css';
+
+#Precisa de um loader para fazer isso, não deve ir para produção, por isso save-dev
+npm install css-loader@0.25.0 style-loader@0.13.1 --save-dev
+alurapic/webpack.config.js
+Add a new test
+,
+{ test: /\.css$/, loader: 'style-loader!css-loader' } <- Tudo que terminar como CSS usa esse
+
+#Precisa desse tb
+npm install url-loader@0.5.7 --save-dev
+,
+{ test: /\.(woff|woff2)(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/font-woff' },
+{ test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=application/octet-stream' },
+{ test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: 'file-loader' },
+{ test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: 'url-loader?limit=10000&mimetype=image/svg+xml' }
+
+
 ***********************************************************************************************
+#Estilizando nosso componentes com SASS
+*********************************************************
+A popularidade de pré-processadores sempre esteve em alta.
+Talvez, um dos pré-processadores mais usados pelo mercado seja o SASS.
+Tanto isso é relevante que podemos declarar nossos estilos usando SASS.
+No entanto, Webpack vem parcialmente configurado para lidar com essa linguagem
+sendo necessário carregar o compilador do SASS e um loader específico.
+*********************************************************
+npm install node-sass@4.5.0 sass-loader@4.1.1 --save-dev
+
+<style scoped lang="scss">
+$cor: firebrick;
+</style>
+
+Dá para importar o arquivo CSS tb
+<style scoped lang="scss">
+  @import './Botao.scss';
+</style>
+
+
 ***********************************************************************************************
+#script para ser aplicado globalmente
+alurapic/src/assets/JS/teste.js
+
+Colocanco o js do bootstrap
+npm install jquery@3.1.1 --save
+import 'bootstrap/dist/js/bootstrap.js';
+
+alurapic/webpack.config.js
+plugins: [ new webpack.ProvidePlugin({
+  $: 'jquery/dist/jquery.js',
+  jQuery: 'jquery/dist/jquery.js'
+}) ]
+
+
 ***********************************************************************************************
+#Salvar imagens em static e chamar assim: (Não esqueça de enviar a pasta static para o servidor)
+<img src="/static/car.jpg">
+
+
 ***********************************************************************************************
+#Trocando o endereço da API em produção
+// alurapic/webpack.config.js
+'process.env': {
+  NODE_ENV: '"production"',
+  API_URL: '"http://enderecodasuaapi.com"'
+}
+
+// src/main.js
+Vue.http.options.root = process.env.API_URL ? process.env.API_URL : 'http://localhost:3000';
+
+npm run dev
+npm run build
+
+
 ***********************************************************************************************
+#interceptadores, Adicionar uma informação no cabeçalho das requisições assíncronas feitas para nosso servidor
+Authorization
+Vamos adicionar um simples interceptador que adiciona um header na requisição antes de ser enviada
+e que exibe os dados vindos do servidor de qualquer resposta
+Vue.http.interceptors.push((req, next) => {
+  // é possível colocar informações no header antes do envio da requisição
+  //req.headers.set('authorization', 'info segura'); <- Não deu certo esse
+  console.log('Request na url -> ' + req.url);
+  next(res => {
+    console.log('Response da url -> ' + req.url);
+    // é possível acessar os dados da reposta e realizar transformações antes
+    console.log(res.body);
+  });
+});
+
+
 ***********************************************************************************************
+#Para saber mais: a diretiva v-for e a propriedade key
+<li class="lista-fotos-item" v-for="foto of fotosComFiltro">
+<li class="lista-fotos-item" v-for="foto of fotosComFiltro" :key="foto._id">
+É recomendável fornecer sempre uma chave com v-for. Inclusive novas versões do Vue.js
+exibirão um aviso no console caso você não tenha definido uma chave.
+
+
 ***********************************************************************************************
 ***********************************************************************************************
 ***********************************************************************************************

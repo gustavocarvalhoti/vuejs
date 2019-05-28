@@ -1,77 +1,70 @@
 <template>
-  <button :class="estiloDoBotao" :type="tipo" @click="disparaAcao()">{{rotulo}}</button>
+    <button @click="disparaAcao()" class="botao" :class="estiloDoBotao" :type="tipo">{{ rotulo }}</button>
 </template>
 
 <script>
-  export default {
+
+export default {
+
     props: {
-      tipo: {
-        required: true,
-        type: String
-      },
 
-      rotulo: {
-        required: true,
-        type: String
-      },
+        tipo: {
+            required: true, 
+            type: String
+        },
 
-      confirmacao: {
-        required: false,
-        default: false,
-        type: Boolean
-      },
+        rotulo: {
+            required: true, 
+            type: String
+        }, 
 
-      estilo: {
-        required: false,
-        default: 'padrao',
-        type: String
-      }
+        confirmacao: Boolean,
+        estilo: String
+
     },
+
     methods: {
-      disparaAcao() {
-        // Exibindo o tipo da propriedade. Sem o ':' será string, com ':' será boolean
-        //console.log(typeof (this.confirmacao));
 
-        if (this.confirmacao) {
-          if (confirm('Confirma operacao?')) {
+        disparaAcao() {
+
+            if(this.confirmacao) {
+                if(confirm('Confirma operação?')) {
+                    this.$emit('botaoAtivado');
+                }
+                return;
+            }
             this.$emit('botaoAtivado');
-          }
-          return;
         }
-        this.$emit('botaoAtivado');
-      }
     },
+
     computed: {
-      // Verifica o estilo que foi passado na prop
-      estiloDoBotao() {
-        // se o valor é padrão ou não passou nada para estilo
-        if (this.estilo === 'padrao') {
-          return 'botao botao-padrao';
+
+        estiloDoBotao() {
+
+            if(this.estilo == 'padrao' || !this.estilo) return 'botao-padrao';
+            if(this.estilo == 'perigo') return 'botao-perigo';
         }
-        if (this.estilo === 'perigo') {
-          return 'botao botao-perigo';
-        }
-      }
+
     }
-  }
+}
 </script>
 
-<style scoped>
-  .botao {
-    display: inline-block;
-    padding: 10px;
-    border-radius: 3px;
-    margin: 10px;
-    font-size: 1.2em;
-  }
+<style>
+    .botao {
+        display: inline-block;
+        padding: 10px;
+        border-radius: 3px;
+        margin: 10px;
+        font-size: 1.2em;
+    }
 
-  .botao-perigo {
-    background: red;
-    color: white;
-  }
+    .botao-perigo {
+        background: firebrick;
+        color: white;
+    }
 
-  .botao-padrao {
-    background: blue;
-    color: white;
-  }
+    .botao-padrao {
+        background: darkcyan;
+        color: white;
+    }
 </style>

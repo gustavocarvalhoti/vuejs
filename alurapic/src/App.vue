@@ -1,8 +1,8 @@
-<!--Single file template--><!--Apresentação-->
 <template>
   <div class="corpo">
-    <meu-menu :routes="routes"></meu-menu>
-    <!--Alteranar os componentes aqui de acordo com a Rota-->
+
+    <meu-menu :rotas="routes"/>
+
     <transition name="pagina">
       <router-view></router-view>
     </transition>
@@ -10,35 +10,41 @@
 </template>
 
 <script>
-  import {routes} from './routes';
-  import Menu from './components/shared/menu/Menu.vue';
 
-  export default {
-    components: {
-      'meu-menu': Menu
-    },
-    data() {
-      return {
-        routes
-      }
+import { routes } from './routes';
+import Menu from './components/shared/menu/Menu.vue';
 
+export default {
+
+  components: {
+    'meu-menu' : Menu
+  },
+  
+  data() {
+
+    return {
+
+      routes : routes.filter(route => route.menu)
     }
   }
+}
 </script>
 
 <style>
   .corpo {
     font-family: Helvetica, sans-serif;
-    margin: 0 auto;
     width: 96%;
+    margin: 0 auto;
   }
 
-  /* Efeito */
-  .pagina-enter, .painel-fade-leave-active {
-    opacity: 0
-  }
+ .pagina-enter, .pagina-leave-active {
 
-  .pagina-enter-active, .painel-fade-leave-active {
-    transition: opacity .4s
-  }
+     opacity: 0;
+ }
+
+ .pagina-enter-active, .pagina-leave-active {
+
+     transition: opacity .4s;
+ }
+
 </style>

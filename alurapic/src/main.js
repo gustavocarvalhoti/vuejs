@@ -2,26 +2,33 @@ import Vue from 'vue'
 import App from './App.vue'
 import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
-import { routes } from './routes'; // tem que vir entre chaves, porque não é default
-import './directives/Transform';   // diretiva que manipula o DOM
+import { routes } from './routes';
+import './directives/Transform';
+import VeeValidate from 'vee-validate';
+import msg from './pt_BR';
+import 'bootstrap/dist/css/bootstrap.css';
 
-//Deixa disponível para todos os componentes
 Vue.use(VueResource);
-
-// http usará sempre o endereço abaixo
 Vue.http.options.root = 'http://localhost:3000';
 
-//Gerencia as roras
 Vue.use(VueRouter);
 
-const router = new VueRouter({
-  routes ,
-  mode: 'history' /* Remove o # da URL */
+const router = new VueRouter({ 
+  routes, 
+  mode: 'history'
 });
 
-//Apresenta meu objeto para a View, virando global
+Vue.use(VeeValidate, {
+  locale: 'pt_BR',
+  dictionary: {
+    pt_BR: {
+      messages: msg
+    }
+  }
+});
+
 new Vue({
   el: '#app',
   router,
-  render: renderizar => renderizar(App)
+  render: h => h(App)
 });
