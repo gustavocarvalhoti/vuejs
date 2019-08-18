@@ -4,9 +4,8 @@ node_js:
   - "stable"
 before_script:
   - cd alurapic/
-  - npm install
 script:
-  - npm run dev
+  - npm install
 deploy:
   provider: heroku
   api-key: 
