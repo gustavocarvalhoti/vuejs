@@ -11,4 +11,4 @@ deploy:
   provider: heroku
   api-key: 
     secure: $HEROKU_API_KEY
-  app: test-ci-gustavo
+  app: teste-ci-vue-gustavo
